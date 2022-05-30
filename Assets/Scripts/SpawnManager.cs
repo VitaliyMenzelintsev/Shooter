@@ -35,8 +35,23 @@ public class SpawnManager : MonoBehaviour
 
    IEnumerator SpawnEnemy()
     {
+        float spawnDelay = 1;
+        float tileFlashSpeed = 4;
         Transform randomTile = map.GetRandomOpenTile();
-        Enemy spawnedEnemy = Instantiate(enemy, Vector3.zero, Quaternion.identity) as Enemy;  // порождение врага
+        Material tileMaterial = randomTile.GetComponent<Renderer>().material;          // сохранение цвета 
+        Color initialColor = tileMaterial.color;         // опредление начального цвета 
+        Color flashColor = Color.red;              // цвет мигания плитки при спавне врага
+        float spawnTimer = 0;
+
+        while(spawnTimer < spawnDelay)
+        {
+            tileMaterial.color = Color.Lerp(initialColor, flashColor, Mathf.PingPong(spawnTimer * tileFlashSpeed, 1));  // мигание
+
+            spawnTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        Enemy spawnedEnemy = Instantiate(enemy, randomTile.position + Vector3.up, Quaternion.identity) as Enemy;  // порождение врага
         spawnedEnemy.OnDeath += OnEnemyDeath;     // получение уведомления о смерти Врага
     }
 
