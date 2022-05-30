@@ -28,8 +28,9 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()                                      // генерация карты
     {
-        System.Random prng = new System.Random(currentMap.seed);   // рандомизация семечка
         currentMap = maps[mapIndex];
+        System.Random prng = new System.Random(currentMap.seed);   // рандомизация семечка
+        GetComponent<BoxCollider>().size = new Vector3(currentMap.mapSize.x * tileSize, 0.05f, currentMap.mapSize.y * tileSize);
 
         // Генерация координат
         allTileCoords = new List<Coord>();                  // инициализация листа с координатами
@@ -90,6 +91,13 @@ public class MapGenerator : MonoBehaviour
                 Transform newObstacle = Instantiate(obstaclePrefab, obstaclePosition + Vector3.up * obstacleHeight / 2, Quaternion.identity) as Transform; // размещение препятствий
                 newObstacle.parent = mapHolder;
                 newObstacle.localScale = new Vector3((1 - outlinePercent) * tileSize, obstacleHeight, (1 - outlinePercent) * tileSize);
+
+                // создание цветового градиента препятствий
+                Renderer obstacleRenderer = newObstacle.GetComponent<Renderer>();            // отображение
+                Material obstacleMaterial = new Material(obstacleRenderer.sharedMaterial);   // создание материала
+                float colourPercent = (float)randomCoord.y / currentMap.mapSize.y;
+                obstacleMaterial.color = Color.Lerp(currentMap.foregrounColour, currentMap.backgrounfColour, colourPercent);
+                obstacleRenderer.sharedMaterial = obstacleMaterial;
             }
             else
             {
@@ -99,21 +107,21 @@ public class MapGenerator : MonoBehaviour
         }
 
         // создание NavMesh рамок карты
-        Transform maskLeft = Instantiate(navmeshMaskPrefab, Vector3.left * ((currentMap.mapSize.x + maxMapSize.x) / 4 * tileSize), Quaternion.identity) as Transform;
+        Transform maskLeft = Instantiate(navmeshMaskPrefab, Vector3.left * ((currentMap.mapSize.x + maxMapSize.x) / 4f * tileSize), Quaternion.identity) as Transform;
         maskLeft.parent = mapHolder;
-        maskLeft.localScale = new Vector3((maxMapSize.x - currentMap.mapSize.x) / 2, 1, currentMap.mapSize.y) * tileSize;
+        maskLeft.localScale = new Vector3((maxMapSize.x - currentMap.mapSize.x) / 2f, 1, currentMap.mapSize.y) * tileSize;
 
-        Transform maskRight = Instantiate(navmeshMaskPrefab, Vector3.right * ((currentMap.mapSize.x + maxMapSize.x) / 4 * tileSize), Quaternion.identity) as Transform;
+        Transform maskRight = Instantiate(navmeshMaskPrefab, Vector3.right * ((currentMap.mapSize.x + maxMapSize.x) / 4f * tileSize), Quaternion.identity) as Transform;
         maskRight.parent = mapHolder;
-        maskRight.localScale = new Vector3((maxMapSize.x - currentMap.mapSize.x) / 2, 1, currentMap.mapSize.y) * tileSize;
+        maskRight.localScale = new Vector3((maxMapSize.x - currentMap.mapSize.x) / 2f, 1, currentMap.mapSize.y) * tileSize;
 
-        Transform maskTop = Instantiate(navmeshMaskPrefab, Vector3.forward * ((currentMap.mapSize.y + maxMapSize.y) / 4 * tileSize), Quaternion.identity) as Transform;
+        Transform maskTop = Instantiate(navmeshMaskPrefab, Vector3.forward * ((currentMap.mapSize.y + maxMapSize.y) / 4f * tileSize), Quaternion.identity) as Transform;
         maskTop.parent = mapHolder;
-        maskTop.localScale = new Vector3(maxMapSize.x, 1, (maxMapSize.y - currentMap.mapSize.y) / 2) * tileSize;
+        maskTop.localScale = new Vector3(maxMapSize.x, 1, (maxMapSize.y - currentMap.mapSize.y) / 2f) * tileSize;
 
-        Transform maskBottom = Instantiate(navmeshMaskPrefab, Vector3.back * ((currentMap.mapSize.y + maxMapSize.y) / 4 * tileSize), Quaternion.identity) as Transform;
+        Transform maskBottom = Instantiate(navmeshMaskPrefab, Vector3.back * ((currentMap.mapSize.y + maxMapSize.y) / 4f * tileSize), Quaternion.identity) as Transform;
         maskBottom.parent = mapHolder;
-        maskBottom.localScale = new Vector3(maxMapSize.x, 1, (maxMapSize.y - currentMap.mapSize.y) / 2) * tileSize;
+        maskBottom.localScale = new Vector3(maxMapSize.x, 1, (maxMapSize.y - currentMap.mapSize.y) / 2f) * tileSize;
 
         navmeshFloor.localScale = new Vector3(maxMapSize.x, maxMapSize.y) * tileSize;
     }
@@ -159,7 +167,7 @@ public class MapGenerator : MonoBehaviour
 
     Vector3 CoordToPosition(int x, int y)
     {
-        return new Vector3(-currentMap.mapSize.x / 2 + 0.5f + x, 0, -currentMap.mapSize.y / 2 + 0.5f + y) * tileSize;    // позиционирование Tile. 0.5f - отступ между клетками
+        return new Vector3(-currentMap.mapSize.x / 2f + 0.5f + x, 0, -currentMap.mapSize.y / 2f + 0.5f + y) * tileSize;    // позиционирование Tile. 0.5f - отступ между клетками
     }
 
 
