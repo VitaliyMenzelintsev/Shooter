@@ -14,8 +14,11 @@ public class SpawnManager : MonoBehaviour
     int enemiesRemainigAlive;      // количество врагов, оставшихся вживых
     float nextSpawnTime;           // время до следующего спавна
 
-    private void Start()
+    MapGenerator map;
+
+    void Start()
     {
+        map = FindObjectOfType<MapGenerator>(); 
         NextWave();                // запуск первой волны на старте
     }
 
@@ -26,9 +29,15 @@ public class SpawnManager : MonoBehaviour
             enemiesRemainingToSpawn--;                                   // количество врагов, которых нужно заспавнить уменьшается
             nextSpawnTime = Time.time + currentWave.timeBetweenSpawns;   // следующий спавн = текущее время + время между спавнами
 
-            Enemy spawnedEnemy = Instantiate(enemy, Vector3.zero, Quaternion.identity) as Enemy;  // порождение врага
-            spawnedEnemy.OnDeath += OnEnemyDeath;     // получение уведомления о смерти Врага
+            StartCoroutine(SpawnEnemy());
         }
+    }
+
+   IEnumerator SpawnEnemy()
+    {
+        Transform randomTile = map.GetRandomOpenTile();
+        Enemy spawnedEnemy = Instantiate(enemy, Vector3.zero, Quaternion.identity) as Enemy;  // порождение врага
+        spawnedEnemy.OnDeath += OnEnemyDeath;     // получение уведомления о смерти Врага
     }
 
     void OnEnemyDeath()

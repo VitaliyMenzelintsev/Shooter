@@ -11,7 +11,6 @@ public class MapGenerator : MonoBehaviour
     public Transform obstaclePrefab;
     public Transform navmeshFloor;
     public Transform navmeshMaskPrefab;
-
     public Vector2 maxMapSize;
 
     [Range(0, 1)]
@@ -20,6 +19,8 @@ public class MapGenerator : MonoBehaviour
 
     List<Coord> allTileCoords;          // массив лист со всеми координатами Tile
     Queue<Coord> shuffledTileCoords;    // массив очередь для хранения перемешанных координат
+    Queue<Coord> shuffledOpenTileCoords;  // координаты открытых плиток
+    Transform[,] tileMap;               // двумерный массив карты плиток. Будет нужен для поиска свободных плит для спавна врагов
 
     void Start()
     {
@@ -29,6 +30,7 @@ public class MapGenerator : MonoBehaviour
     public void GenerateMap()                                      // генерация карты
     {
         currentMap = maps[mapIndex];
+        tileMap = new Transform[currentMap.mapSize.x, currentMap.mapSize.y];   // изначально назначаем ей размер как у основной карты
         System.Random prng = new System.Random(currentMap.seed);   // рандомизация семечка
         GetComponent<BoxCollider>().size = new Vector3(currentMap.mapSize.x * tileSize, 0.05f, currentMap.mapSize.y * tileSize);
 
@@ -67,6 +69,7 @@ public class MapGenerator : MonoBehaviour
 
                 newTile.localScale = Vector3.one * (1 - outlinePercent) * tileSize;   // создание отступа
                 newTile.parent = mapHolder;
+                tileMap[x, y] = newTile;   
             }
         }
 
@@ -75,6 +78,7 @@ public class MapGenerator : MonoBehaviour
 
         int obstacleCount = (int)(currentMap.mapSize.x * currentMap.mapSize.y * currentMap.obstaclePercent);       // количество препятствий
         int currentObstacleCount = 0;                                             // текущее количество препятствий
+        List<Coord> allOpenCoords = new List<Coord>(allTileCoords);               // дист координат всех открытых плиток
 
         for (int i = 0; i < obstacleCount; i++)
         {
@@ -98,6 +102,8 @@ public class MapGenerator : MonoBehaviour
                 float colourPercent = (float)randomCoord.y / currentMap.mapSize.y;
                 obstacleMaterial.color = Color.Lerp(currentMap.foregrounColour, currentMap.backgrounfColour, colourPercent);
                 obstacleRenderer.sharedMaterial = obstacleMaterial;
+
+                allOpenCoords.Remove(randomCoord); 
             }
             else
             {
@@ -105,6 +111,8 @@ public class MapGenerator : MonoBehaviour
                 currentObstacleCount--;
             }
         }
+
+        shuffledOpenTileCoords = new Queue<Coord>(Utility.ShuffleArray(allOpenCoords.ToArray(), currentMap.seed));
 
         // создание NavMesh рамок карты
         Transform maskLeft = Instantiate(navmeshMaskPrefab, Vector3.left * ((currentMap.mapSize.x + maxMapSize.x) / 4f * tileSize), Quaternion.identity) as Transform;
@@ -176,6 +184,13 @@ public class MapGenerator : MonoBehaviour
         Coord randomCoord = shuffledTileCoords.Dequeue();       // получение первого элемента очереди
         shuffledTileCoords.Enqueue(randomCoord);                // добавление полученной коррдинаты в конец очереди
         return randomCoord;                                     // возвращение случайной координаты
+    }
+
+    public Transform GetRandomOpenTile()
+    {
+        Coord randomCoord = shuffledOpenTileCoords.Dequeue();
+        shuffledOpenTileCoords.Enqueue(randomCoord);
+        return tileMap[randomCoord.x, randomCoord.y];
     }
 
     [System.Serializable]
