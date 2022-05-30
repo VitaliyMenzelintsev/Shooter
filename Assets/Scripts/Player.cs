@@ -32,7 +32,7 @@ public class Player : LivingEntity
         Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
         float rayDistance;                                              // длина луча
 
-        if(groundPlane.Raycast(ray, out rayDistance))                   // сохранение длины луча в переменную               
+        if (groundPlane.Raycast(ray, out rayDistance))                   // сохранение длины луча в переменную               
         {
             Vector3 point = ray.GetPoint(rayDistance);                  // отслеживание точки пересечения луча и поверхности
             //Debug.DrawLine(ray.origin, point, Color.red);             // отображение луча
@@ -42,7 +42,12 @@ public class Player : LivingEntity
         // управдение оружием
         if (Input.GetMouseButton(0))
         {
-            gunController.Shoot();
+            gunController.OnTriggerHold();
+        }
+
+        if (Input.GetMouseButtonUp(0)) // кнопка поднята, запуск метода отпускания
+        {
+            gunController.OnTriggerRelease();
         }
     }
 }

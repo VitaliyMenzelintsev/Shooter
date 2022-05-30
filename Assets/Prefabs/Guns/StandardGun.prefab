@@ -444,7 +444,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25a882c05f996cd4dad9862452a66030, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fireMode: 1
   muzzle: {fileID: 8459632296933483592}
   projectile: {fileID: 679662492379962216, guid: e9f479f5e0b41b346999693d008a1ce8, type: 3}
   msBetweenShots: 100
   muzzleVelocity: 35
+  burstCount: 4

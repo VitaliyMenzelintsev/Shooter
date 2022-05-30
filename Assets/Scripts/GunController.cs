@@ -25,11 +25,19 @@ public class GunController : MonoBehaviour
         equippedGun.transform.parent = weaponHold;                       // снаряжённое оружие привязать к точке крепления
     }
 
-    public void Shoot()
+    public void OnTriggerHold()
     {
         if(equippedGun != null)
         {
-            equippedGun.Shoot();
+            equippedGun.OnTriggerHold();
+        }
+    }
+
+    public void OnTriggerRelease()
+    {
+        if (equippedGun != null)
+        {
+            equippedGun.OnTriggerRelease();
         }
     }
 }

@@ -178,6 +178,14 @@ public class MapGenerator : MonoBehaviour
         return new Vector3(-currentMap.mapSize.x / 2f + 0.5f + x, 0, -currentMap.mapSize.y / 2f + 0.5f + y) * tileSize;    // позиционирование Tile. 0.5f - отступ между клетками
     }
 
+    public Transform GetTileFromPosition(Vector3 position) 
+    {
+        int x = Mathf.RoundToInt( position.x / tileSize + (currentMap.mapSize.x - 1) / 2f );
+        int y = Mathf.RoundToInt(position.z / tileSize + (currentMap.mapSize.y - 1) / 2f);
+        x = Mathf.Clamp(x, 0, tileMap.GetLength(0) -1);
+        y = Mathf.Clamp(y, 0, tileMap.GetLength(1) -1);
+        return tileMap[x, y];
+    }
 
     public Coord GetRandomCoord()    // метод получения случайной координаты
     {
