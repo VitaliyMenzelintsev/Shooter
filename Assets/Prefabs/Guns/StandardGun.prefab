@@ -508,7 +508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25a882c05f996cd4dad9862452a66030, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireMode: 1
+  fireMode: 2
   projectileSpawnPoint:
   - {fileID: 8459632296933483592}
   - {fileID: 1086317814}
@@ -517,3 +517,8 @@ MonoBehaviour:
   msBetweenShots: 100
   muzzleVelocity: 35
   burstCount: 4
+  projectilesPerMagazine: 10
+  reloadTime: 0.3
+  kickMinMax: {x: 0.05, y: 2}
+  recoilAngleMinMax: {x: 3, y: 5}
+  timeOfReturnToPosition: 0.1

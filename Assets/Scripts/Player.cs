@@ -6,6 +6,8 @@ public class Player : LivingEntity
 {
     public float moveSpeed = 5;
 
+    public Transform crosshairs;
+
     Camera viewCamera;
     PlayerController controller;
     GunController gunController;
@@ -27,14 +29,18 @@ public class Player : LivingEntity
 
         // ввод взгл€да √√
         Ray ray = viewCamera.ScreenPointToRay(Input.mousePosition);     // луч, идущий от камеры к позиции мыши
-        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        Plane groundPlane = new Plane(Vector3.up, Vector3.up * gunController.GunHeight);
         float rayDistance;                                              // длина луча
 
         if (groundPlane.Raycast(ray, out rayDistance))                   // сохранение длины луча в переменную               
         {
             Vector3 point = ray.GetPoint(rayDistance);                  // отслеживание точки пересечени€ луча и поверхности
-            //Debug.DrawLine(ray.origin, point, Color.red);             // отображение луча
             controller.LookAt(point);
+            crosshairs.position = point;
+            if((new Vector2(point.x, point.z) - new Vector2(transform.position.x, transform.position.z)).sqrMagnitude > 1)
+            {
+                gunController.Aim(point);
+            }
         }
 
         // управдение оружием
@@ -46,6 +52,11 @@ public class Player : LivingEntity
         if (Input.GetMouseButtonUp(0)) // кнопка подн€та, запуск метода отпускани€
         {
             gunController.OnTriggerRelease();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            gunController.Reload();
         }
     }
 }
