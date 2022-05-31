@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1086317813
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1086317814}
+  m_Layer: 0
+  m_Name: ProjectileSpawnPoint (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1086317814
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086317813}
+  m_LocalRotation: {x: 0.00007852373, y: 0.02926761, z: -0.0052345735, w: 0.9995579}
+  m_LocalPosition: {x: 0.032, y: 0.04400003, z: 0.908}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6823307558878287301}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0.027, y: 3.354, z: -0.599}
 --- !u!1 &579263857082003553
 GameObject:
   m_ObjectHideFlags: 0
@@ -35,6 +66,37 @@ Transform:
   m_Father: {fileID: 6823307558878287301}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1412103601292362346
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1353805737063830032}
+  m_Layer: 0
+  m_Name: ProjectileSpawnPoint (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1353805737063830032
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412103601292362346}
+  m_LocalRotation: {x: -0.00015877098, y: -0.05917762, z: 0.010584041, w: 0.99819136}
+  m_LocalPosition: {x: -0.034, y: 0.04400003, z: 0.908}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6823307558878287301}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0.054, y: -6.785, z: 1.212}
 --- !u!1 &3058611578271648639
 GameObject:
   m_ObjectHideFlags: 0
@@ -128,7 +190,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8459632296933483592}
   m_Layer: 0
-  m_Name: Muzzle
+  m_Name: ProjectileSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -429,6 +491,8 @@ Transform:
   m_Children:
   - {fileID: 8740295031634626426}
   - {fileID: 8459632296933483592}
+  - {fileID: 1086317814}
+  - {fileID: 1353805737063830032}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -445,7 +509,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fireMode: 1
-  muzzle: {fileID: 8459632296933483592}
+  projectileSpawnPoint:
+  - {fileID: 8459632296933483592}
+  - {fileID: 1086317814}
+  - {fileID: 1353805737063830032}
   projectile: {fileID: 679662492379962216, guid: e9f479f5e0b41b346999693d008a1ce8, type: 3}
   msBetweenShots: 100
   muzzleVelocity: 35

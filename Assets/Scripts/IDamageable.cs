@@ -2,7 +2,7 @@ using UnityEngine;
 
 public interface IDamageable 
 {
-    void TakeHit(float damage, RaycastHit hit);           // количество урона и направление луча
+    void TakeHit(float damage, Vector3 hitPoint, Vector3 hitDirection);           // количество урона и направление луча
 
     void TakeDamage(float damage);
 }

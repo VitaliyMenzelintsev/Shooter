@@ -1,13 +1,14 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent (typeof(NavMeshAgent))]
 public class Enemy : LivingEntity
 {
-    public enum State {Idle, Chasing, Attacking}      // введение перечисления состояний врага, чтобы он не искал путь, когда уже атакует, к примеру
+    public enum State {Idle, Chasing, Attacking}      // перечисление состояний врага
     State currentState;
+
+    public ParticleSystem deathEffect;
 
     NavMeshAgent pathfinder;
     Transform target;
@@ -26,27 +27,59 @@ public class Enemy : LivingEntity
 
     bool hasTarget;
 
-    protected override void Start()                                       // перезапись метода Start из LivingEntity.cs
+    private void Awake()
     {
-        base.Start();                                                     // выполнение функционала Start от LivingEntity.cs
         pathfinder = GetComponent<NavMeshAgent>();
         skinMaterial = GetComponent<Renderer>().material;                 //инициализация материала как того, что уже на обьекте
         originalColor = skinMaterial.color;                               // исходный цвет - это цвет материала
 
-        if(GameObject.FindGameObjectWithTag("Player") != null)
+        if (GameObject.FindGameObjectWithTag("Player") != null)
         {
-            currentState = State.Chasing;                                     // первоначальное состояние - преследование
             hasTarget = true;
 
             target = GameObject.FindGameObjectWithTag("Player").transform;    // цель - игровой обьект с тэгом Player
             targetEntity = target.GetComponent<LivingEntity>();               // инициализация живой сущности
-            targetEntity.OnDeath += OnTargetDeath;                            // подписка на событие
-
+           
             myCollisionRadius = GetComponent<CapsuleCollider>().radius;       // радиус столкновения равен радиусу коллайдера
             targetCollisionRadius = target.GetComponent<CapsuleCollider>().radius;
 
+        }
+    }
+
+    protected override void Start()                                       // перезапись метода Start из LivingEntity.cs
+    {
+        base.Start();                                                     // выполнение функционала Start от LivingEntity.cs
+
+        if(hasTarget)
+        {
+            currentState = State.Chasing;                                     // первоначальное состояние - преследование
+            targetEntity.OnDeath += OnTargetDeath;                            // подписка на событие
             StartCoroutine(UpdatePath());                                     // со стартом запускаем цикл обновления пути
         }
+    }
+
+    public void SetCharacteristics(float moveSpeed, int hitsToKillPlayer, float enemyHealth, Color skinColor)
+    {
+        pathfinder.speed = moveSpeed;
+
+        if (hasTarget)
+        {
+            damage = Mathf.Ceil (targetEntity.startingHealth / hitsToKillPlayer);  // расчёт урона для каждого врага
+        }
+        startingHealth = enemyHealth;
+
+        skinMaterial = GetComponent<Renderer>().material;
+        skinMaterial.color = skinColor;
+        originalColor = skinMaterial.color;
+    }
+
+    public override void TakeHit (float damage, Vector3 hitPoint, Vector3 hitDirection)
+    {
+        if( damage >= health)
+        {
+            Destroy(Instantiate(deathEffect.gameObject, hitPoint, Quaternion.FromToRotation(Vector3.forward, hitDirection)) as GameObject, deathEffect.startLifetime);
+        }
+        base.TakeHit(damage, hitPoint, hitDirection);
     }
 
     void OnTargetDeath()                             // событие смерть цели

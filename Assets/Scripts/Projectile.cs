@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -17,7 +15,7 @@ public class Projectile : MonoBehaviour
         Collider[] initialCollisions = Physics.OverlapSphere(transform.position, 0.1f, collisionMask); // массив коллайдеров в которые попала пуля
         if(initialCollisions.Length > 0) // если массив насчитывает более 0, то уничтожается пуля и запускается метод попадания
         {
-            OnHitObject(initialCollisions[0]);     // передача в метод OnHitObject первого коллайдера с которым столкнётся пуля
+            OnHitObject(initialCollisions[0], transform.position, transform.forward);     // передача в метод OnHitObject первого коллайдера с которым столкнётся пуля
         }
     }
 
@@ -42,25 +40,16 @@ public class Projectile : MonoBehaviour
         // если луч попадает в тригеррный коллайдер
         if (Physics.Raycast(ray, out hit, moveDistance + skinWidth, collisionMask, QueryTriggerInteraction.Collide))
         {
-            OnHitObject(hit);    // запуск метода попадания по обьекту
+            OnHitObject(hit.collider, hit.point, transform.forward);    // запуск метода попадания по обьекту
         }
     }
-    void OnHitObject(RaycastHit hit)
-    {
-        IDamageable damageableObject = hit.collider.GetComponent<IDamageable>();
-        if (damageableObject != null)
-        {
-            damageableObject.TakeHit(damage, hit);   // повреждаемому обьекту наносится урон и попадает луч
-        }
-        GameObject.Destroy(gameObject);
-    }
-
-    void OnHitObject(Collider с)
+ 
+    void OnHitObject(Collider с, Vector3 hitPoint, Vector3 hitDirection)
     {
         IDamageable damageableObject = с.GetComponent<IDamageable>();
         if (damageableObject != null)
         {
-            damageableObject.TakeDamage(damage);   // повреждаемому обьекту наносится урон
+            damageableObject.TakeHit(damage, hitPoint, transform.forward);   // повреждаемому обьекту наносится урон
         }
         GameObject.Destroy(gameObject);
     }

@@ -1,9 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+    public bool devMode;
+         
     public Wave[] waves;           // массив волн
     public Enemy enemy;            // тип врагов, которые спавнятся
     LivingEntity playerEntity;     // ссылка на игрока как сущность
@@ -24,7 +25,7 @@ public class SpawnManager : MonoBehaviour
     Vector3 campingPositionOld;                  // координаты позиции кэмпинга
     bool isCamping;                              // игрок стоит на месте
 
-    bool isDisabled;
+    bool isDisabled;                             // используется в событии смерти игрока
 
     void Start()
     {
@@ -48,12 +49,24 @@ public class SpawnManager : MonoBehaviour
             campingPositionOld = playerT.position;
         }
 
-        if (enemiesRemainingToSpawn > 0 && Time.time > nextSpawnTime)    // если в волне ещё нужно заспавнить и времени прошло больше, чем заложено на спавн
+        if ((enemiesRemainingToSpawn > 0 || currentWave.infinite) && Time.time > nextSpawnTime)    // если в волне ещё нужно заспавнить и времени прошло больше, чем заложено на спавн
         {
             enemiesRemainingToSpawn--;                                   // количество врагов, которых нужно заспавнить уменьшается
             nextSpawnTime = Time.time + currentWave.timeBetweenSpawns;   // следующий спавн = текущее время + время между спавнами
 
-            StartCoroutine(SpawnEnemy());
+            StartCoroutine("SpawnEnemy");
+        }
+        if (devMode)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                StopCoroutine("SpawnEnemy");
+                foreach(Enemy enemy in FindObjectsOfType<Enemy>())
+                {
+                    GameObject.Destroy(enemy.gameObject);
+                }
+                NextWave();
+            }
         }
     }
 
@@ -63,7 +76,10 @@ public class SpawnManager : MonoBehaviour
         float spawnDelay = 1;
         float tileFlashSpeed = 4;
         Transform spawnTile = map.GetRandomOpenTile();
-        if (isCamping) spawnTile = map.GetTileFromPosition(playerT.position);   // если игрок кэмпит, то место спавна перестаёт быть рандомным
+        if (isCamping)
+        {
+            spawnTile = map.GetTileFromPosition(playerT.position); // если игрок кэмпит, то место спавна перестаёт быть рандомным
+        }   
         Material tileMaterial = spawnTile.GetComponent<Renderer>().material;          // сохранение цвета 
         Color initialColor = tileMaterial.color;         // опредление начального цвета 
         Color flashColor = Color.red;              // цвет мигания плитки при спавне врага
@@ -79,6 +95,9 @@ public class SpawnManager : MonoBehaviour
 
         Enemy spawnedEnemy = Instantiate(enemy, spawnTile.position + Vector3.up, Quaternion.identity) as Enemy;  // порождение врага
         spawnedEnemy.OnDeath += OnEnemyDeath;     // получение уведомления о смерти Врага
+        
+        spawnedEnemy.SetCharacteristics           // создание врага с конкретными характеристиками
+            (currentWave.moveSpeed, currentWave.hitsToKillPlayer, currentWave.enemyHealth, currentWave.skinColor);
     }
 
     void OnPlayerDeath()
@@ -113,8 +132,13 @@ public class SpawnManager : MonoBehaviour
     [System.Serializable]
     public class Wave                         // класс волна описывает её характеристики
     {
+        public bool infinite;
         public int enemyCount;                // количество врагов
         public float timeBetweenSpawns;       // время между появлением врагов внутри волны
 
+        public float moveSpeed;               // скорость врагов
+        public int hitsToKillPlayer;          // урон до убийства игрока
+        public float enemyHealth;
+        public Color skinColor;         
     }
 }
