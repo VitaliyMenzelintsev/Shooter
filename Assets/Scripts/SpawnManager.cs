@@ -27,6 +27,8 @@ public class SpawnManager : MonoBehaviour
 
     bool isDisabled;                             // используетс€ в событии смерти игрока
 
+    public event System.Action<int> OnNewWave;
+
     void Start()
     {
         playerEntity = FindObjectOfType<Player>();
@@ -45,6 +47,7 @@ public class SpawnManager : MonoBehaviour
         if(Time.deltaTime > nextCampingCheckTime)
         {
             nextCampingCheckTime = timeBetweenCampingChecks + Time.deltaTime;                                 // врем€ проверки
+            
             isCamping = (Vector3.Distance(playerT.position, campingPositionOld) < campingThresholdDistance);  // проверка на кэмпинг
             campingPositionOld = playerT.position;
         }
@@ -75,6 +78,7 @@ public class SpawnManager : MonoBehaviour
         // настройка мигани€ плитки перед спавном
         float spawnDelay = 1;
         float tileFlashSpeed = 4;
+
         Transform spawnTile = map.GetRandomOpenTile();
         if (isCamping)
         {
@@ -116,6 +120,11 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+    //void ResetPlayerPosition()
+    //{
+    //    playerT.position = map.GetTileFromPosition(Vector3.zero).position + (Vector3.up * 3);
+    //}
+
     void NextWave()
     {
         currentWaveNumber++;                                   // прирост номера волны
@@ -126,6 +135,12 @@ public class SpawnManager : MonoBehaviour
 
             enemiesRemainingToSpawn = currentWave.enemyCount;   // количество врагов до спавна = количество врагов в текущей волне
             enemiesRemainigAlive = enemiesRemainingToSpawn;
+
+            if (OnNewWave != null)                              
+            {
+                OnNewWave(currentWaveNumber);
+            }
+            //ResetPlayerPosition();
         }
     }
 

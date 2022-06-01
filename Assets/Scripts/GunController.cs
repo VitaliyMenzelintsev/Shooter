@@ -20,6 +20,11 @@ public class GunController : MonoBehaviour
         equippedGun.transform.parent = weaponHold;                       // снаряжённое оружие привязать к точке крепления
     }
 
+    public void EquipGun(int weaponIndex)
+    {
+        EquipGun(allGuns[weaponIndex]);
+    }
+
     public void OnTriggerHold()
     {
         if(equippedGun != null)

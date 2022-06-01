@@ -20423,7 +20423,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponHold: {fileID: 556501840}
-  startingGun: {fileID: 2285462905537626597, guid: 15fc645f8a744be4291339d185929528, type: 3}
+  allGuns:
+  - {fileID: 1095821650314284988, guid: 2c3a43ab056be084597848a8726b18d2, type: 3}
+  - {fileID: 5464488667066156007, guid: b24f31c1e3b0a6d4ca8194d4431e55f1, type: 3}
+  - {fileID: 2384904451018276639, guid: ff0bbac7c9f903442aca0347c9c24597, type: 3}
 --- !u!21 &1751201924
 Material:
   serializedVersion: 8
