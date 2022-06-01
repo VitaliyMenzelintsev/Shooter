@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
@@ -12,12 +14,24 @@ public class Player : LivingEntity
     PlayerController controller;
     GunController gunController;
 
-    protected override void Start()                                   // перезапись метода Start из LivingEntity.cs
+
+    private void Awake()
     {
-        base.Start();                                                 // выполнение функционала Start от LivingEntity.cs
         controller = GetComponent<PlayerController>();
         gunController = GetComponent<GunController>();
         viewCamera = Camera.main;                                     // инициализация камеры как основной
+        FindObjectOfType<SpawnManager>().OnNewWave += OnNewWave;
+    }
+
+    protected override void Start()                                   // перезапись метода Start из LivingEntity.cs
+    {
+        base.Start();                                                 // выполнение функционала Start от LivingEntity.cs
+    }
+
+    void OnNewWave(int waveNumber)
+    {
+        health = startingHealth;
+        gunController.EquipGun(waveNumber - 1);
     }
 
     void Update()

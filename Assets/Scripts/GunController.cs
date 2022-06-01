@@ -3,16 +3,13 @@ using UnityEngine;
 public class GunController : MonoBehaviour
 {
     public Transform weaponHold;             // точка крепления оружия
-    public Gun startingGun;                  // стартовое оружие
+    public Gun[] allGuns;                  // массив со всем оружием
     Gun equippedGun;                         // снаряжённое оружие
 
 
     public void Start()
     {
-        if(startingGun != null)              // если в начале нет оружия
-        {
-            EquipGun(startingGun);           // запустить метод экипирования с аргументом стартового оружия
-        }
+      
     }
 
     public void EquipGun(Gun gunToEquip)     // экипировать оружие
