@@ -20,14 +20,14 @@ public class Gun : MonoBehaviour
     public Vector2 recoilAngleMinMax = new Vector2(3, 5);     // угол подброса
     public float timeOfReturnToPosition = 0.1f;
     Vector3 recoilSmoothDampVelocity;    // сила отдачи оружия назад
-    float recoilRotSmoothDampVelocity;   // сила подброса оружия вверх
-    float recoilAngle;                   // угол отдачи
+    private float recoilRotSmoothDampVelocity;   // сила подброса оружия вверх
+    private float recoilAngle;                   // угол отдачи
 
-    float nextShotTime;
+    private float nextShotTime;
 
-    bool triggerReleasedSinceLastShot;   // триггер запущенный с моменат последнего выстрела
-    int shotsRemainingInBurst;           // выстрелов осталось в очереди
-    int projectilesRemainingInMagazine;  // патронов в обойме осталось
+    private bool triggerReleasedSinceLastShot;   // триггер запущенный с моменат последнего выстрела
+    private int shotsRemainingInBurst;           // выстрелов осталось в очереди
+    private int projectilesRemainingInMagazine;  // патронов в обойме осталось
    
     void Start()
     {
@@ -73,7 +73,7 @@ public class Gun : MonoBehaviour
                     break;
                 }
                 projectilesRemainingInMagazine--;
-                nextShotTime = Time.time + msBetweenShots / 1000; // стрелять можно, если позволяет скорострельность
+                nextShotTime = Time.time + msBetweenShots; // стрелять можно, если позволяет скорострельность
                 Projectile newProjectile = Instantiate(projectile, projectileSpawnPoint[i].position, projectileSpawnPoint[i].rotation) as Projectile;   // создание снаряда при стрельбе
                 newProjectile.SetSpeed(muzzleVelocity);         // применение начальной скорости
             }
