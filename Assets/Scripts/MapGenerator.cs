@@ -4,7 +4,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     public Map[] maps;
-    Map currentMap;                 // карта в массиве
+    Map currentMap;                 
     public int mapIndex;
 
     public Transform tilePrefab;

@@ -6,16 +6,16 @@ public class Projectile : MonoBehaviour
     float speed = 10;
     float damage = 1;
     float lifeTime = 3;
-    float skinWidth = 0.1f;                   // ширина пули
+    float skinWidth = 0.1f;                   
 
     void Start()
     {
-        Destroy(gameObject, lifeTime);         // уничтожить пулю после окончания lifeTime
+        Destroy(gameObject, lifeTime);         
 
-        Collider[] initialCollisions = Physics.OverlapSphere(transform.position, 0.1f, collisionMask); // массив коллайдеров в которые попала пуля
-        if(initialCollisions.Length > 0) // если массив насчитывает более 0, то уничтожается пуля и запускается метод попадания
+        Collider[] initialCollisions = Physics.OverlapSphere(transform.position, 0.1f, collisionMask); 
+        if(initialCollisions.Length > 0)
         {
-            OnHitObject(initialCollisions[0], transform.position, transform.forward);     // передача в метод OnHitObject первого коллайдера с которым столкнётся пуля
+            OnHitObject(initialCollisions[0], transform.position, transform.forward);   
         }
     }
 
@@ -33,14 +33,14 @@ public class Projectile : MonoBehaviour
 
     void CheckCollisions(float moveDistance)
     {
-        Ray ray = new Ray(transform.position, transform.forward);  // луч от позиции в прямом направлении
+        Ray ray = new Ray(transform.position, transform.forward);  
         RaycastHit hit;
 
 
-        // если луч попадает в тригеррный коллайдер
+       
         if (Physics.Raycast(ray, out hit, moveDistance + skinWidth, collisionMask, QueryTriggerInteraction.Collide))
         {
-            OnHitObject(hit.collider, hit.point, transform.forward);    // запуск метода попадания по обьекту
+            OnHitObject(hit.collider, hit.point, transform.forward);   
         }
     }
  
@@ -49,7 +49,7 @@ public class Projectile : MonoBehaviour
         IDamageable damageableObject = с.GetComponent<IDamageable>();
         if (damageableObject != null)
         {
-            damageableObject.TakeHit(damage, hitPoint, transform.forward);   // повреждаемому обьекту наносится урон
+            damageableObject.TakeHit(damage, hitPoint, transform.forward);   
         }
         GameObject.Destroy(gameObject);
     }

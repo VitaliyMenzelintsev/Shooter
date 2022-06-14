@@ -3,8 +3,8 @@ using UnityEngine;
 public class GunController : MonoBehaviour
 {
     public Transform weaponHold;             // точка креплени€ оружи€
-    public Gun[] allGuns;                  // массив со всем оружием
-    Gun equippedGun;                         // снар€жЄнное оружие
+    public Gun[] allGuns;                  
+    Gun equippedGun;                         
 
 
     public void Start()
@@ -12,12 +12,12 @@ public class GunController : MonoBehaviour
       
     }
 
-    public void EquipGun(Gun gunToEquip)     // экипировать оружие
+    public void EquipGun(Gun gunToEquip)     
     {
-        if (equippedGun != null) Destroy(equippedGun.gameObject);         // уничтожение экипированного оружи€ при экипировке нового
+        if (equippedGun != null) Destroy(equippedGun.gameObject);         
 
-        equippedGun = Instantiate(gunToEquip, weaponHold.position, weaponHold.rotation) as Gun;          // создание нового экземпл€ра оружи€
-        equippedGun.transform.parent = weaponHold;                       // снар€жЄнное оружие прив€зать к точке креплени€
+        equippedGun = Instantiate(gunToEquip, weaponHold.position, weaponHold.rotation) as Gun;          
+        equippedGun.transform.parent = weaponHold;                      
     }
 
     public void EquipGun(int weaponIndex)

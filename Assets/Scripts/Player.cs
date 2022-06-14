@@ -23,9 +23,9 @@ public class Player : LivingEntity
         FindObjectOfType<SpawnManager>().OnNewWave += OnNewWave;
     }
 
-    protected override void Start()                                   // перезапись метода Start из LivingEntity.cs
+    protected override void Start()                                  
     {
-        base.Start();                                                 // выполнение функционала Start от LivingEntity.cs
+        base.Start();                                                
     }
 
     void OnNewWave(int waveNumber)
@@ -36,13 +36,11 @@ public class Player : LivingEntity
 
     void Update()
     {
-        // ввод движения
         Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")); // GetAxisRaw не делает инерционное сглаживание
         Vector3 moveVelocity = moveInput.normalized * moveSpeed;
         controller.Move(moveVelocity);
 
-        // ввод взгляда ГГ
-        Ray ray = viewCamera.ScreenPointToRay(Input.mousePosition);     // луч, идущий от камеры к позиции мыши
+        Ray ray = viewCamera.ScreenPointToRay(Input.mousePosition);     // луч, от камеры к позиции мыши
         Plane groundPlane = new Plane(Vector3.up, Vector3.up * gunController.GunHeight);
         float rayDistance;                                              // длина луча
 
@@ -57,13 +55,12 @@ public class Player : LivingEntity
             }
         }
 
-        // управдение оружием
         if (Input.GetMouseButton(0))
         {
             gunController.OnTriggerHold();
         }
 
-        if (Input.GetMouseButtonUp(0)) // кнопка поднята, запуск метода отпускания
+        if (Input.GetMouseButtonUp(0)) 
         {
             gunController.OnTriggerRelease();
         }

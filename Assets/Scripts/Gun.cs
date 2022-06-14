@@ -73,11 +73,11 @@ public class Gun : MonoBehaviour
                     break;
                 }
                 projectilesRemainingInMagazine--;
-                nextShotTime = Time.time + msBetweenShots; // стрелять можно, если позволяет скорострельность
-                Projectile newProjectile = Instantiate(projectile, projectileSpawnPoint[i].position, projectileSpawnPoint[i].rotation) as Projectile;   // создание снаряда при стрельбе
-                newProjectile.SetSpeed(muzzleVelocity);         // применение начальной скорости
+                nextShotTime = Time.time + msBetweenShots; 
+                Projectile newProjectile = Instantiate(projectile, projectileSpawnPoint[i].position, projectileSpawnPoint[i].rotation) as Projectile;  
+                newProjectile.SetSpeed(muzzleVelocity);         
             }
-            transform.localPosition -= Vector3.forward * Random.Range(kickMinMax.x, kickMinMax.y);   // добавление "анимации" отдачи для оружия (не курсор)
+            transform.localPosition -= Vector3.forward * Random.Range(kickMinMax.x, kickMinMax.y);   
             recoilAngle += Random.Range(recoilAngleMinMax.x, recoilAngleMinMax.y);
             recoilAngle = Mathf.Clamp(recoilAngle, 0, 25);
         }

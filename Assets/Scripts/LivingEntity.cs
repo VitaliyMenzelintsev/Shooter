@@ -1,14 +1,12 @@
 using UnityEngine;
 
-
-// классу наследуют Enemy и Player. Он описывает базовый функционал сущностей
 public class LivingEntity : MonoBehaviour, IDamageable
 {
     public float startingHealth;
     protected float health;
     protected bool dead;
 
-    public event System.Action OnDeath;     // событие, на которое подпиcан SpawnManager
+    public event System.Action OnDeath;     
 
     protected virtual void Start()
     {

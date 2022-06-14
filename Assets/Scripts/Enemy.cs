@@ -5,56 +5,56 @@ using UnityEngine.AI;
 [RequireComponent (typeof(NavMeshAgent))]
 public class Enemy : LivingEntity
 {
-    public enum State {Idle, Chasing, Attacking}      // перечисление состо€ний врага
+    public enum State {Idle, Chasing, Attacking}     
     State currentState;
 
     public ParticleSystem deathEffect;
 
     NavMeshAgent pathfinder;
     Transform target;
-    LivingEntity targetEntity;                         // ссылка на целевую сущность
-    Material skinMaterial;                             //обь€вление материала врага
+    LivingEntity targetEntity;                         
+    Material skinMaterial;                             
      
-    Color originalColor;                               // обь€вление исходногго цвета врага
+    Color originalColor;                              
 
-    float attackDistance = 0.5f;                        // дистанци€ атаки
-    float timeBetweenAttacks = 1f;                      // врем€ между атаками
+    float attackDistance = 0.5f;                        
+    float timeBetweenAttacks = 1f;                     
     float damage = 1;
 
-    float nextAttackTime;                               // врем€ следующей атаки
-    float myCollisionRadius;                            // радиус столкновени€ ¬рага
-    float targetCollisionRadius;                       // радиус столкновени€ цели (»грока)
+    float nextAttackTime;                              
+    float myCollisionRadius;                           
+    float targetCollisionRadius;                       
 
     bool hasTarget;
 
     private void Awake()
     {
         pathfinder = GetComponent<NavMeshAgent>();
-        skinMaterial = GetComponent<Renderer>().material;                 //инициализаци€ материала как того, что уже на обьекте
-        originalColor = skinMaterial.color;                               // исходный цвет - это цвет материала
+        skinMaterial = GetComponent<Renderer>().material;                 
+        originalColor = skinMaterial.color;                              
 
         if (GameObject.FindGameObjectWithTag("Player") != null)
         {
             hasTarget = true;
 
-            target = GameObject.FindGameObjectWithTag("Player").transform;    // цель - игровой обьект с тэгом Player
-            targetEntity = target.GetComponent<LivingEntity>();               // инициализаци€ живой сущности
+            target = GameObject.FindGameObjectWithTag("Player").transform;   
+            targetEntity = target.GetComponent<LivingEntity>();               
            
-            myCollisionRadius = GetComponent<CapsuleCollider>().radius;       // радиус столкновени€ равен радиусу коллайдера
+            myCollisionRadius = GetComponent<CapsuleCollider>().radius;      
             targetCollisionRadius = target.GetComponent<CapsuleCollider>().radius;
 
         }
     }
 
-    protected override void Start()                                       // перезапись метода Start из LivingEntity.cs
+    protected override void Start()                                     
     {
-        base.Start();                                                     // выполнение функционала Start от LivingEntity.cs
+        base.Start();                                                    
 
         if(hasTarget)
         {
-            currentState = State.Chasing;                                     // первоначальное состо€ние - преследование
-            targetEntity.OnDeath += OnTargetDeath;                            // подписка на событие
-            StartCoroutine(UpdatePath());                                     // со стартом запускаем цикл обновлени€ пути
+            currentState = State.Chasing;                                    
+            targetEntity.OnDeath += OnTargetDeath;                           
+            StartCoroutine(UpdatePath());                                    
         }
     }
 
@@ -82,7 +82,7 @@ public class Enemy : LivingEntity
         base.TakeHit(damage, hitPoint, hitDirection);
     }
 
-    void OnTargetDeath()                             // событие смерть цели
+    void OnTargetDeath()                             
     {
         hasTarget = false;
         currentState = State.Idle;
@@ -94,10 +94,10 @@ public class Enemy : LivingEntity
         {
             if (Time.time > nextAttackTime)
             {
-                float sqrDistanceToTarget = (target.position - transform.position).sqrMagnitude;             // вычисление квадратного рассто€ни€ до цели
-                if (sqrDistanceToTarget < Mathf.Pow(attackDistance + myCollisionRadius + targetCollisionRadius, 2))            // если квадрат рассто€ни€ до цели меньше, чем квадрат дистанции атаки
+                float sqrDistanceToTarget = (target.position - transform.position).sqrMagnitude;             
+                if (sqrDistanceToTarget < Mathf.Pow(attackDistance + myCollisionRadius + targetCollisionRadius, 2))            
                 {
-                    nextAttackTime = Time.time + timeBetweenAttacks;               // врем€ следующей атаки = текущее врем€ + врем€ между атаками
+                    nextAttackTime = Time.time + timeBetweenAttacks;               
                     StartCoroutine(Attack());
                 }
             }
@@ -110,13 +110,13 @@ public class Enemy : LivingEntity
         pathfinder.enabled = false;
 
         Vector3 originalPosition = transform.position;
-        Vector3 directionToTarget = (target.position - transform.position).normalized;  // вектор направлен€и к цели
-        Vector3 attackPosition = target.position - directionToTarget * (myCollisionRadius);  // позици€ цели
+        Vector3 directionToTarget = (target.position - transform.position).normalized;  
+        Vector3 attackPosition = target.position - directionToTarget * (myCollisionRadius);  
     
         float percent = 0;
         float attackSpeed = 3;
 
-        skinMaterial.color = Color.red;      // враг краснеет, когда атакует
+        skinMaterial.color = Color.red;      
         bool hasAppliedDamage = false;
 
         while(percent <= 1)
@@ -128,34 +128,34 @@ public class Enemy : LivingEntity
             }
 
             percent += Time.deltaTime * attackSpeed;
-            float interpolation = (-Mathf.Pow(percent, 2)+percent) *4;         // описываем график гиперболы дл€ моделировани€ атаки врага
+            float interpolation = (-Mathf.Pow(percent, 2)+percent) *4;         
             transform.position = Vector3.Lerp(originalPosition, attackPosition, interpolation);
 
             yield return null;
         }
 
-        skinMaterial.color = originalColor;     // возвращение прежнего цвета врагу
+        skinMaterial.color = originalColor;    
         currentState = State.Chasing;
         pathfinder.enabled = true;
     }
 
-    IEnumerator UpdatePath()              // разгружаем Update, обновл€€ данные о цели не каждый кадр
+    IEnumerator UpdatePath()            
     {
-        float refreshRate = .25f;         // частота обновлени€
+        float refreshRate = .25f;         
 
         while (hasTarget)
         {
-            if (currentState == State.Chasing)                         // путь обновл€етс€ только, если состо€ние Chasing
+            if (currentState == State.Chasing)                         
             {
-                Vector3 directionToTarget = (target.position - transform.position).normalized;  // вектор направлен€и к цели
-                Vector3 targetPosition = target.position - directionToTarget * (myCollisionRadius * targetCollisionRadius + attackDistance / 2);  // позици€ цели
+                Vector3 directionToTarget = (target.position - transform.position).normalized;  
+                Vector3 targetPosition = target.position - directionToTarget * (myCollisionRadius * targetCollisionRadius + attackDistance / 2);  
 
-                if (!dead)                                              // поиск пути при условии, что обьект не мЄртв
+                if (!dead)                                             
                 {
-                    pathfinder.SetDestination(target.position);         // точка назначание дл€ Ќавћешјгента - позици€ цели (игрока)
+                    pathfinder.SetDestination(target.position);         
                 }
             } 
-            yield return new WaitForSeconds(refreshRate);               // обновл€ем цель каждое значение refreshRate 
+            yield return new WaitForSeconds(refreshRate);             
         }
     }
 }

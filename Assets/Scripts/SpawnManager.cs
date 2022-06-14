@@ -5,7 +5,7 @@ public class SpawnManager : MonoBehaviour
 {
     public bool devMode;
          
-    public Wave[] waves;           // массив волн
+    public Wave[] waves;           
     public Enemy enemy;            // тип врагов, которые спавнятся
     LivingEntity playerEntity;     // ссылка на игрока как сущность
     Transform playerT;             // ссылка на игрока как игровой обьект 
@@ -107,7 +107,6 @@ public class SpawnManager : MonoBehaviour
     void OnPlayerDeath()
     {
         isDisabled = true;
-
     }
 
     void OnEnemyDeath()
@@ -119,11 +118,6 @@ public class SpawnManager : MonoBehaviour
             NextWave();                // запуск следующей волны
         }
     }
-
-    //void ResetPlayerPosition()
-    //{
-    //    playerT.position = map.GetTileFromPosition(Vector3.zero).position + (Vector3.up * 3);
-    //}
 
     void NextWave()
     {
@@ -140,19 +134,18 @@ public class SpawnManager : MonoBehaviour
             {
                 OnNewWave(currentWaveNumber);
             }
-            //ResetPlayerPosition();
         }
     }
 
     [System.Serializable]
-    public class Wave                         // класс волна описывает её характеристики
+    public class Wave                         
     {
         public bool infinite;
-        public int enemyCount;                // количество врагов
-        public float timeBetweenSpawns;       // время между появлением врагов внутри волны
+        public int enemyCount;                
+        public float timeBetweenSpawns;       
 
-        public float moveSpeed;               // скорость врагов
-        public int hitsToKillPlayer;          // урон до убийства игрока
+        public float moveSpeed;               
+        public int hitsToKillPlayer;         
         public float enemyHealth;
         public Color skinColor;         
     }
