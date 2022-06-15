@@ -7,11 +7,6 @@ public class GunController : MonoBehaviour
     Gun equippedGun;                         
 
 
-    public void Start()
-    {
-      
-    }
-
     public void EquipGun(Gun gunToEquip)     
     {
         if (equippedGun != null) Destroy(equippedGun.gameObject);         
